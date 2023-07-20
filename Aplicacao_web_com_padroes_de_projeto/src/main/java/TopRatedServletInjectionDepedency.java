@@ -1,8 +1,5 @@
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.Scanner;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -41,7 +38,6 @@ public class TopRatedServletInjectionDepedency extends HttpServlet {
                 idadeUsuario = 0;
             }
 
-            // Atualize a idade do usuário com base no parâmetro da solicitação, se fornecido
             String idadeParam = request.getParameter("idade");
             if (idadeParam != null) {
                 idadeUsuario = Integer.parseInt(idadeParam);

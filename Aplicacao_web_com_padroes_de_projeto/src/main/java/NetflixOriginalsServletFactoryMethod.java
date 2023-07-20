@@ -21,7 +21,6 @@ public class NetflixOriginalsServletFactoryMethod extends HttpServlet {
 
         try {
             String originalsPath = "/discover/tv?api_key=" + API_KEY + "&with_networks=213";
-            String apiUrl = "https://api.themoviedb.org/3" + originalsPath;
 
             HttpSession session = request.getSession();
             Integer idadeUsuario = (Integer) session.getAttribute("idade");
@@ -36,10 +35,28 @@ public class NetflixOriginalsServletFactoryMethod extends HttpServlet {
             }
 
             CertificationFilterFactory filterFactory = new CertificationFilterFactory();
-            CertificationFilter certificationFilter = filterFactory.createCertificationFilter(idadeUsuario, CERTIFICATION_COUNTRY);
-            originalsPath += certificationFilter.getCertificationFilter();
+            CertificationFilter certificationFilter = null;
 
-            apiUrl = "https://api.themoviedb.org/3" + originalsPath;
+            // Obter a idade do usuário da HttpSession
+            String sessionID = request.getParameter("sessionID");
+            HttpSession userSession = (HttpSession) getServletContext().getAttribute(sessionID);
+            if (userSession != null) {
+                idadeUsuario = (Integer) userSession.getAttribute("idade");
+            }
+
+            if (idadeUsuario != null) {
+                certificationFilter = filterFactory.createCertificationFilter(idadeUsuario, CERTIFICATION_COUNTRY);
+            } else {
+                idadeUsuario = 0;
+            }
+
+            if (certificationFilter != null) {
+                originalsPath += certificationFilter.getCertificationFilter();
+            } else {
+                originalsPath += "&certification.lte=10&certification_country=" + CERTIFICATION_COUNTRY; // Define um filtro padrão
+            }
+
+            String apiUrl = "https://api.themoviedb.org/3" + originalsPath;
 
             URL url = new URL(apiUrl);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -96,7 +113,6 @@ class CertificationFilter10 implements CertificationFilter {
         return "&certification.lte=10&certification_country=" + certificationCountry;
     }
 }
-
 class CertificationFilter12 implements CertificationFilter {
     private final String certificationCountry;
 
@@ -116,6 +132,7 @@ class CertificationFilter14 implements CertificationFilter {
     public CertificationFilter14(String certificationCountry) {
         this.certificationCountry = certificationCountry;
     }
+
     @Override
     public String getCertificationFilter() {
         return "&certification.lte=14&certification_country=" + certificationCountry;

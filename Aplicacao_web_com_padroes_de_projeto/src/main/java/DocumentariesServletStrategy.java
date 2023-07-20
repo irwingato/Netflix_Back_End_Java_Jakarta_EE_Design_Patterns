@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import modelos.Usuario;
 
 interface AgeFilterStrategy {
     String applyFilter(int idadeUsuario, String certificationCountry);
@@ -65,38 +66,45 @@ public class DocumentariesServletStrategy extends HttpServlet {
             String originalsPath = originalsPathStrategy.getOriginalsPath(apiKey);
 
             HttpSession session = request.getSession();
-            Integer idadeUsuario = (Integer) session.getAttribute("idade");
-            if (idadeUsuario == null) {
-                idadeUsuario = 0;
+            String sessionID = (String) session.getAttribute("sessionID");
+            if (sessionID == null) {
+                sessionID = "";
             }
 
-            String idadeParam = request.getParameter("idade");
-            if (idadeParam != null) {
-                idadeUsuario = Integer.parseInt(idadeParam);
-                session.setAttribute("idade", idadeUsuario);
+            String sessionIDParam = request.getParameter("sessionID");
+            if (sessionIDParam != null) {
+                sessionID = sessionIDParam;
+                session.setAttribute("sessionID", sessionID);
             }
 
-            String certificationCountry = "br";
-            String certificationFilter = ageFilterStrategy.applyFilter(idadeUsuario, certificationCountry);
-            originalsPath += certificationFilter;
+            HttpSession userSession = (HttpSession) getServletContext().getAttribute(sessionID);
+            if (userSession != null && userSession.getAttribute("usuario") != null) {
+                Usuario usuario = (Usuario) userSession.getAttribute("usuario");
+                int idadeUsuario = usuario.getIdade();
+                String certificationCountry = "br";
+                String certificationFilter = ageFilterStrategy.applyFilter(idadeUsuario, certificationCountry);
+                originalsPath += certificationFilter;
 
-            String apiUrl = "https://api.themoviedb.org/3" + originalsPath;
+                String apiUrl = "https://api.themoviedb.org/3" + originalsPath;
 
-            URL url = new URL(apiUrl);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
-            conn.connect();
+                URL url = new URL(apiUrl);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("GET");
+                conn.connect();
 
-            StringBuilder responseBody;
-            try (Scanner scanner = new Scanner(url.openStream())) {
-                responseBody = new StringBuilder();
-                while (scanner.hasNext()) {
-                    responseBody.append(scanner.nextLine());
+                StringBuilder responseBody;
+                try (Scanner scanner = new Scanner(url.openStream())) {
+                    responseBody = new StringBuilder();
+                    while (scanner.hasNext()) {
+                        responseBody.append(scanner.nextLine());
+                    }
                 }
-            }
-            conn.disconnect();
+                conn.disconnect();
 
-            out.println(responseBody.toString());
+                out.println(responseBody.toString());
+            } else {
+                out.println("Usuário não autenticado.");
+            }
         } catch (IOException e) {
             out.println("Erro ao obter dados dos originais Netflix: " + e.getMessage());
         }

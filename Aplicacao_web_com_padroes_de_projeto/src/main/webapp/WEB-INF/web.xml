@@ -16,6 +16,10 @@
         <servlet-name>LoginServlet</servlet-name>
         <servlet-class>LoginServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>TopRatedServletInjectionDepedency</servlet-name>
+        <servlet-class>TopRatedServletInjectionDepedency</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoginServlet</servlet-name>
         <url-pattern>/LoginServlet</url-pattern>
@@ -35,14 +39,6 @@
     <servlet-mapping>
         <servlet-name>NetflixOriginalsServletFactoryMethod</servlet-name>
         <url-pattern>/discover/netflixOriginals</url-pattern>
-    </servlet-mapping>
-    <servlet>
-        <servlet-name>TopRatedServletInjectionDepedency</servlet-name>
-        <servlet-class>TopRatedServletInjectionDepedency</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>TopRatedServletInjectionDepedency</servlet-name>
-        <url-pattern>/movie/top_rated</url-pattern>
     </servlet-mapping>
     <servlet>
         <servlet-name>ComedyServlet</servlet-name>
@@ -67,5 +63,9 @@
     <servlet-mapping>
         <servlet-name>DocumentariesServletStrategy</servlet-name>
         <url-pattern>/discover/documentaries</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>TopRatedServletInjectionDepedency</servlet-name>
+        <url-pattern>/movie/top_rated</url-pattern>
     </servlet-mapping>
 </web-app>

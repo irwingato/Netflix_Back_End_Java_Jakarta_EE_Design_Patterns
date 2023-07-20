@@ -1,8 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
@@ -15,10 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-/**
- *
- * @author Usuario
- */
 @WebServlet(urlPatterns = {"/ComedyServletTemplate"})
 public abstract class ComedyServletTemplate extends HttpServlet {
 
@@ -36,12 +27,6 @@ public abstract class ComedyServletTemplate extends HttpServlet {
             Integer idadeUsuario = (Integer) session.getAttribute("idade");
             if (idadeUsuario == null) {
                 idadeUsuario = 0;
-            }
-
-            String idadeParam = request.getParameter("idade");
-            if (idadeParam != null) {
-                idadeUsuario = Integer.valueOf(idadeParam);
-                session.setAttribute("idade", idadeUsuario);
             }
 
             String certificationCountry = "br";

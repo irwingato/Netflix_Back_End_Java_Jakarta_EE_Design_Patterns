@@ -5,7 +5,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import modelos.Usuario;
 
 public class LoginServlet extends HttpServlet {
@@ -24,19 +23,18 @@ public class LoginServlet extends HttpServlet {
 
         // Verifica as credenciais
         if (isValidCredentials(user.getEmail(), user.getSenha())) {
-            // Cria uma sessão para o usuário
-            
+            // Salva os dados do usuário no objeto
             user.setSessionID(request.getSession().getId());
-            
-            // Obtém a idade fornecida pelo usuário a partir do formulário
             int idadeUsuario = user.getIdade();
-            
-            // Armazena a idade na sessão
-            HttpSession session = request.getSession();
-            session.setAttribute("idadeUsuario", idadeUsuario);
-            
+            user.setIdade(idadeUsuario);
+
+            // Coloca o usuário na sessão
+            request.getSession().setAttribute("usuario", user);
+
+            // Coloca o ID da sessão em um local de acesso global
+            getServletContext().setAttribute(request.getSession().getId(), request.getSession());
+
             String json = gson.toJson(user);
-            
             response.getWriter().println(json);
         } else {
             // Exibe uma mensagem de erro
